@@ -3,13 +3,12 @@ photoviewer
 
 Trivial flask application to navigate and display images.
 
-This does nothing clever, only allows the user to navigate a file hierarchy and then display files in their original aspect ratio, but with a set width.
+This allows the user to navigate a file hierarchy and then display files in their original aspect ratio, but with a set width.
+It also generates (once only saved in .thumbnail directory) and shows thumbnails.
 
 It would be easy to add some more advanced functionality. E.g.
 
-[x]Render thumbnails using some image library for each image file in a listing.
-[x]Thumbnails could be saved somewhere to prevent them having to be regenerated each time.
-[x]A database could be added which keeps track of the thumbnails.
+[x]A database could be added for various reasons.
 [x]Database could have a rating for each image.
 [x]etc, etc.
 
@@ -18,6 +17,12 @@ Setup
 
 Install flask (http://flask.pocoo.org/)
 Something like: ```pip install flask```
+
+Install jpeg:
+Something like ```brew install jpeg```
+
+Install PIL:
+Something like ```pip install pillow```
 
 Clone this repository: ```git clone https://github.com/dpwrussell/photoviewer.git```
 
