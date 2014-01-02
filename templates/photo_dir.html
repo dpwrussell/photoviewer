@@ -1,0 +1,24 @@
+{% extends "layout.html" %}
+{% block body %}
+
+  <ul class=entries>
+  {% if up %}
+    <li><h2><a href='{{ up }}'>..</a></h2></li>
+  {% endif %}
+
+  {% for entry in dir_entries %}
+    <li><h2><a href='{{ path }}/{{ entry }}'>{{ entry }}</a></h2></li>
+  {% else %}
+    <li><em>No directories</em></li>
+  {% endfor %}
+  </ul>
+  <br>
+  <ul class=entries>
+  {% for entry in image_entries %}
+    <li><h2><a href='{{ path }}/{{ entry }}'>{{ entry }}</a></h2></li>
+  {% else %}
+    <li><em>No image files</em></li>
+  {% endfor %}
+  </ul>
+
+{% endblock %}
