@@ -5,8 +5,9 @@ from flask import Flask, request, session, g, redirect, url_for, \
 from contextlib import closing
 
 # Imports for views
-from os import listdir
-from os.path import isdir, join, dirname
+from os import listdir, mkdir
+from os.path import isdir, join, dirname, exists, splitext
+from PIL import Image
 
 # create our little application :)
 app = Flask(__name__)
@@ -18,7 +19,8 @@ app.config.update(dict(
     # PHOTO_DIR needs to be symlinked from 'static/images' to allow files to be
     # served:
     # ln -s /Users/dpwrussell/Checkout/ome-documentation/omero/images images
-    PHOTO_DIR='/Users/dpwrussell/Checkout/ome-documentation/omero/images'
+    PHOTO_DIR='/Users/dpwrussell/Checkout/ome-documentation/omero/images',
+    THUMB_SIZE=(128, 128)
 ))
 app.config.from_envvar('PHOTOVIEWER_SETTINGS', silent=True)
 
@@ -49,20 +51,36 @@ def photo_dir(path):
         # TODO There is no safety here, a user could potentially navigate
         # outside of where they should be allowed
 
+        # If there is no thumbnail directory for this directory, create it
+        thumb_dir = join(nav, '.thumbnail')
+        if not exists(thumb_dir):
+            mkdir(thumb_dir)
+
+
         list_all = listdir(nav)
         for list_item in list_all:
-            if isdir(join(nav,list_item)):
+            if isdir(join(nav,list_item)) and list_item != '.thumbnail':
                 dir_entries.append(list_item)
             # Primitive check for image files, only for jpg and png
             elif list_item.endswith('.png') or list_item.endswith('.jpg'):
                 image_entries.append(list_item)
+
+                # Generate thumbnails for any that are missing
+                thumb = join(thumb_dir,list_item)
+                if not exists(thumb):
+                    # Open primary image
+                    im = Image.open(join(nav,list_item))
+                    # Convert mode on paletted image formats
+                    if im.mode != "RGB":
+                        im = im.convert("RGB")
+                    im.thumbnail(app.config['THUMB_SIZE'], Image.ANTIALIAS)
+                    im.save(thumb, "JPEG")
 
         return render_template('photo_dir.html', dir_entries=dir_entries, image_entries=image_entries, path=path, up=up)
 
     # Otherwise it must be a file (assuming an image file, but again, unsafe)
     # So display the photo
     else:
-        print('image: %s' % url_for("static", filename=join('images', path)))
         return render_template('photo.html', image=url_for("static", filename=join('images', path)), up=up)
 
 

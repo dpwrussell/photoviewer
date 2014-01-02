@@ -15,7 +15,7 @@
   <br>
   <ul class=entries>
   {% for entry in image_entries %}
-    <li><h2><a href='{{ path }}/{{ entry }}'>{{ entry }}</a></h2></li>
+    <li><img src='/static/images/{{ path }}/.thumbnail/{{ entry }}'><h2><a href='{{ path }}/{{ entry }}'>{{ entry }}</a></h2></li>
   {% else %}
     <li><em>No image files</em></li>
   {% endfor %}
