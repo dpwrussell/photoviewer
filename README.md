@@ -36,3 +36,5 @@ Run
 cd photoviewer
 python photoviewer.py
 ```
+
+Your web browser can then be pointed at http://localhost:5000
